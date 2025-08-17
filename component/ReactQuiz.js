@@ -4,8 +4,13 @@ import Loader from "./Loader";
 import Error from "./Error";
 import StartScreen from "./StartScreen";
 import Question from "./Question";
-import "../src/quiz.css";
+import "../src/index.css";
 import NextQuestion from "./NextQuestion";
+import Progress from "./Progress";
+import FinishScreen from "./FinishScreen";
+import Footer from "./Footer";
+import Timer from "./Timer";
+
 
 const initialState = {
     questions:[],
@@ -13,6 +18,7 @@ const initialState = {
     index:0,
     answer:null,
     points:0,
+    secondsRemaining:null,
 };
 
 function reducer (state,action) {
@@ -31,7 +37,8 @@ function reducer (state,action) {
         case 'start':
             return{
                 ...state,
-                status:"active"
+                status:"active",
+                secondsRemaining:state.questions.length * 30,
             }    
         case 'newAnswer':
             const qn = state.questions.at(state.index);
@@ -43,7 +50,19 @@ function reducer (state,action) {
                 state.points,
             }
         case "nextQuestion":
-            return {...state,index:state.index+1};            
+            return {...state,index:state.index+1,answer:null};   
+        case "finish":
+            return{...state,status:"finish"}             
+        case 'Restart':
+            return {...initialState,questions:state.questions,
+                status:"ready"}    
+        case 'tick':
+               return {...state, secondsRemaining: state.secondsRemaining > 0 
+                ? state.secondsRemaining - 1: 0,
+                status:state.secondsRemaining === 0 ? "finish":
+                state.status,
+                
+        }                                
         default:
             throw new Error("unknown action");    
     }
@@ -52,7 +71,11 @@ function reducer (state,action) {
 const ReactQuiz = () => {
 
     const[state,dispatch]=useReducer(reducer,initialState);
-    const {questions,status,index,answer,points}=state;
+    const {questions,status,index,answer,points,secondsRemaining}=state;
+    const maxPoints = questions.reduce((prev,cur) =>(
+        prev+ cur.points
+    ),0);
+    console.log("maxPoints",maxPoints);
     console.log("questions",questions);  
     console.log("length ",questions.length);  
     useEffect(function () {
@@ -73,17 +96,41 @@ const ReactQuiz = () => {
                noq = {questions.length} 
                dispatch = {dispatch}
                /> }
-               {status === "active" && <Question 
+               {status === "active" && (
+                <>
+                    <Progress 
+                    index={index} 
+                    noq={questions.length} 
+                    points = {points}
+                    maxPoints = {maxPoints}
+                    answer={answer}
+                    />
+               <Question 
                qn = {questions[index]}
                dispatch = {dispatch}
                answer = {answer} 
                 points = {points}
-               />}
+               />  
+              
+               <Footer>
+                <Timer dispatch={dispatch}secondsRemaining = {secondsRemaining}/>
                <NextQuestion 
                 dispatch = {dispatch} 
                 answer = {answer}
+                noq={questions.length}
+                index = {index}
                 />
+                </Footer>
+              
+            </>
+              )}
+              {status === 'finish' && <FinishScreen
+                points = {points}
+                maxPoints = {maxPoints}
+                dispatch={dispatch}
+               />}
             </QuestionListing>
+            
         </div>
     );
 }

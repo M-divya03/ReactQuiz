@@ -3,6 +3,8 @@
 const Options = ({qn,dispatch,answer}) => {
 
     if (!qn || !qn.options) return null;
+
+    const hasAnswered = answer !== null;
     return (
         <div className="options">
             {qn.options.map(
@@ -10,11 +12,14 @@ const Options = ({qn,dispatch,answer}) => {
                     <button 
                         className={`btn btn-option ${index === answer ? 
                             "answer":""} 
-                            ${ answer !== null ? 
-                                index === qn.correctOption ? "correct":"wrong" 
-                            : "" }`}
+                            ${hasAnswered ? 
+                                index === qn.correctOption ? 
+                                "correct"
+                                :"wrong" 
+                            : "" 
+                        }`}
                         key = {index}
-                        disabled = {answer !== null}
+                        disabled = {hasAnswered}
                         onClick ={
                             () => {
                                 dispatch({type:"newAnswer",payload:index})}
