@@ -1,4 +1,8 @@
-const FinishScreen = ({points,maxPoints,dispatch}) => {
+import { useContext } from "react";
+import { QuizContext } from "./QuizProvider";
+
+const FinishScreen = () => {
+    const {points,maxPoints,dispatch} = useContext(QuizContext);
     const percentage = (points/maxPoints)*100;
     return (
         <>

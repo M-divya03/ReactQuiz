@@ -1,4 +1,8 @@
-const StartScreen = ({noq,dispatch}) => {
+import { useContext } from "react";
+import { QuizContext } from "./QuizProvider";
+
+const StartScreen = () => {
+    const {noq,dispatch} = useContext(QuizContext);
     return(
         <div>
             <h2>Welcome to the React Quiz</h2>

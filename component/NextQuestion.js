@@ -1,4 +1,8 @@
-const NextQuestion = ({dispatch,answer,index,noq}) => {
+import { useContext } from "react";
+import {QuizContext} from "./QuizProvider";
+
+const NextQuestion = () => {
+    const {dispatch,answer,index,noq} = useContext(QuizContext);
     if(answer == null) return null ;
 
     if(index < noq -1){

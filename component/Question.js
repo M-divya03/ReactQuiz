@@ -1,18 +1,16 @@
+import { useContext } from "react";
 import Options from "./Options";
+import {QuizContext} from "./QuizProvider";
 
-const Question = ({qn,dispatch,answer,points}) => {
-    console.log("qn ",qn);
+const Question = () => {
+    const {qn,dispatch,answer,points} = useContext(QuizContext);
+    console.log("qn from question",qn);
     return(
         <div>
           <h4>{qn.question}</h4>  
           <p>points:{points}</p>
-          {/* {console.log("option prop qn",qn)} */}
-         <div className="options">
-         <Options 
-            qn={qn} 
-            dispatch ={dispatch} 
-            answer = {answer} 
-            />
+          <div className="options">
+         <Options />
             </div>
         </div>
     );

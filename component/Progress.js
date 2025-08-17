@@ -1,4 +1,8 @@
-const Progress = ({index,noq,points,maxPoints,answer}) => {
+import { useContext } from "react";
+import {QuizContext} from "./QuizProvider";
+
+const Progress = () => {
+    const {index,noq,points,maxPoints,answer} = useContext(QuizContext);
     return (
         <div className="progress">
             
